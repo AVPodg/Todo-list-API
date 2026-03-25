@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app: # Наше Go-приложение
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_DB_DSN=postgres://user:password@db:5432/notes_db?sslmode=disable
+      - APP_SERVER_PORT=:8080
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    container_name: notes_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notes_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
